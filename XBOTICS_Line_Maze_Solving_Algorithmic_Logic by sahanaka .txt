@@ -1,0 +1,26 @@
+
+
+XBOTICS_LINE_MAZE_SOLVING_ALGOTITHMIC_LOGIC
+
+
+Logic
+
+Basics
+1.Robot finds left --> He goes left
+2.Robot finds Right --> He goes Right
+3.Robot finds T --> He goes Right
+
+Sequential Basics
+1.If the robot find the sequence 'left,forward,180Turn,forward,TJunction' --> He goes left
+2.If the robot find the sequence 'Right,forward,180Turn,forward,TJunction' --> He goes Right
+
+Sequential Equations
+left,forward,180turn,forward,right=180Turn
+left,forward,180turn,forward,right=180Turn
+example - can be extended to left,forward,left,forward,180turn,forward,right,forward,TJunction
+
+
+
+Sequential Complex models
+1.Robot will miss all the junctions except TJunctions for a count where count = #180Turns that it takes after its first TJunction
+ after a left or right and zero 180Variables
