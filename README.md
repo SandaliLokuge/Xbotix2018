@@ -1,2 +1,2 @@
-# Xbotix2017
-Robot controlling programs for Xbotix Champions 2017
+# Xbotix2018
+Robot controlling programs for Xbotix Champions 2018
