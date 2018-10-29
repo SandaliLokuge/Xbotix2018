@@ -1,4 +1,4 @@
-
+NEED TO ADD TWO MORE LOGICAL SEQUENCES IN ORDER TO SOLVE THE LINE MAZE
 
 //                                                                              XBOTIX CODE
 /*
