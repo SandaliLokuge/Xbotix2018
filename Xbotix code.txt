@@ -1,0 +1,194 @@
+
+
+//                                                                              XBOTIX CODE
+/*
+ * 0 = white
+ * 1 = black
+ */
+
+int f1;
+int f2;
+int f3;
+int f4;
+int f5;
+int b1;
+int b2;
+int b3;
+int b4;
+int b5;
+char sArray[100];
+char sArray2[100];
+int seqMark = 0;
+String whereToGo = ""; 
+String intialGo = ""; 
+
+//Intialize following values 
+#define lwf pwmPin1
+#define rwf pwmPin2
+#define lwb pwmPin1
+#define rwb pwmPin2
+
+int t1 = 90 roattion of the bot
+int t2 = short reverse
+int frontPwm = pwm value for go front
+int turnPwm =  pwm value for go left,right,180 turn
+//
+
+  
+void setup() {
+  pinMode(2, INPUT);
+  pinMode(3, INPUT);
+  pinMode(4, INPUT);
+  pinMode(5, INPUT);
+  pinMode(6, INPUT);
+  pinMode(7, INPUT);
+  pinMode(8, INPUT);
+  pinMode(9, INPUT);
+  pinMode(10, INPUT);
+  pinMode(11, INPUT);
+  pinMode(lwf, OUTPUT);
+  pinMode(rwf, OUTPUT);
+  pinMode(lwb, OUTPUT);
+  pinMode(rwb, OUTPUT);
+  Serial.begin(9600);
+  
+}
+
+void loop() {
+  f1,f2,f3,f4,f5,b1,b2,b3,b4,b5=getInputReadings(); 
+  if(whereToGo == "right"){
+    right();
+    seqMark = 0;
+    whereToGo = ""; 
+    intialGo = ""; 
+  }else if(whereToGo == "left"){
+    left();
+    seqMark = 0;
+    whereToGo = ""; 
+    intialGo = ""; 
+  }
+  if((f2==0)&&(f3==0)&&(f4==0)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==0)&&(b5==0)){ // Meeting a dead end - pic 2
+    back();
+    sArray[100]={'R'};
+  }else if((f2==0)&&(f3==0)&&(f4==0)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==0)&&(b5==1)){ // Meeting a right - pic 3
+    right();
+  }else if((f2==0)&&(f3==0)&&(f4==0)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==1)&&(b5==0)){ // Meeting a left - pic 4
+    left();
+  }else if((f2==1)&&(f3==1)&&(f4==1)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==0)&&(b5==1)){  // Meeting a right - pic 5
+    rightSp();
+    sArray[100]={'R'};
+  }else if((f2==1)&&(f3==1)&&(f4==1)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==1)&&(b5==0)){ // Meeting a left - pic 6
+    leftSp();
+    sArray[100]={'L'};
+  }else if((f2==0)&&(f3==0)&&(f4==0)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==1)&&(b5==1)){ // Meeting a T - pic 7
+    T();
+    sArray[100]={'T'};
+    right();
+  }else if((f2==1)&&(f3==1)&&(f4==1)&&(b2==1)&&(b3==1)&&(b4==1)&&(f1==0)&&(f5==0)&&(b1==1)&&(b5==1)){ // Meeting a 4 - pic 7
+    left();
+  }else if((b2==1)&&(b3==1)&&(b4==1)){ // follow the line
+    go();
+  }else if(b2==0){ // follow the line
+    slowLeft();
+  }else if(b4==0){ // follow the line
+    slowRight();
+  }else if((b2==0)&&(b3==0){ // follow the line
+    slowLeft();
+  }else if(b4==0)&&(b3==0){ // follow the line
+    slowRight();
+  }
+  
+}
+
+int getInputReadings(){
+  f1 = digitalRead(2);
+  f2 = digitalRead(3);
+  f3 = digitalRead(4);
+  f4 = digitalRead(5);
+  f5 = digitalRead(6);
+  b1 = digitalRead(7);
+  b2 = digitalRead(8);
+  b3 = digitalRead(9);
+  b4 = digitalRead(10);
+  b5 = digitalRead(11);
+  return f1,f2,f3,f4,f5,b1,b2,b3,b4,b5;
+}
+
+void go(){
+  analogWrite(lwf,frontPwm) ;
+  analogWrite(rwf,frontPwm) ;
+}
+
+void left(){
+  analogWrite(lwb,turnPwm) ;
+  analogWrite(rwb,turnPwm) ;
+  delay(t2);  
+  analogWrite(rwf,turnPwm) ;
+  delay(t1);
+  slowGo();
+}
+
+void right(){
+  analogWrite(lwb,turnPwm) ;
+  analogWrite(rwb,turnPwm) ;
+  delay(t2);  
+  analogWrite(lwf,turnPwm) ;
+  delay(t1);
+  slowGo();
+}
+
+void leftSp(){
+  analogWrite(lwb,turnPwm) ;
+  analogWrite(rwb,turnPwm) ;
+  delay(t2);  
+  analogWrite(rwf,turnPwm) ;
+  delay(t1);
+  slowGo();
+  seqMark =  0 ;
+  intialGo = "left";
+}
+
+void rightSp(){
+  analogWrite(lwb,turnPwm) ;
+  analogWrite(rwb,turnPwm) ;
+  delay(t2);  
+  analogWrite(lwf,turnPwm) ;
+  delay(t1);
+  slowGo();
+  intialGo = "right";
+  seqMark =  0 ;
+}
+
+void back(){
+  analogWrite(rwb,turnPwm) ;
+  delay(t1);  
+  analogWrite(lwf,turnPwm) ;
+  delay(t1);
+  seqMark = seqMark + 1;
+}
+void T(){
+  seqMark = seqMark + 1;
+  if((intialGo = "left")&&(seqMark==2)){
+    whereToGo = "left";  
+  }else if((intialGo = "right")&&(seqMark==2)){
+    whereToGo = "right";  
+  } 
+  
+}
+void slowLeft(){
+  analogWrite(lwf,0) ;
+  analogWrite(rwf,0) ;
+  analogWrite(rwf,turnPwm) ;
+}
+
+void slowGo(){
+  analogWrite(lwf,turnPwm) ;
+  analogWrite(rwf,turnPwm) ;
+  delay(500)
+}
+
+void slowRight(){
+  analogWrite(lwf,0) ;
+  analogWrite(rwf,0) ;
+  analogWrite(lwf,turnPwm) ;
+}
